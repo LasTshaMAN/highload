@@ -2,7 +2,8 @@ package main
 
 import (
 	"highload/service/api"
-	"highload/service/api/adapters"
+	"highload/service/api/adapters/iris"
+	"highload/service/domain"
 	"os"
 	"os/signal"
 	"syscall"
@@ -11,10 +12,12 @@ import (
 )
 
 func main() {
-	a := api.New()
+	v := domain.NewValuer()
+	s := domain.NewSleeper()
+	a := api.New(v, s)
 	// TODO
 	// make port dynamic
-	if _, err := adapters.Run(a, 8000); err != nil {
+	if _, err := iris.Run(a, 8000); err != nil {
 		logrus.Error(err)
 		return
 	}

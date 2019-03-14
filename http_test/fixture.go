@@ -1,4 +1,4 @@
-package tests
+package httpTest
 
 import (
 	"encoding/json"
@@ -10,28 +10,28 @@ import (
 	"github.com/stretchr/testify/require"
 )
 
-type fixture struct {
+type Fixture struct {
 	t       *testing.T
 	server  *httptest.Server
 	toClose []io.ReadCloser
 }
 
-func newFixture(t *testing.T, handler http.Handler) *fixture {
+func NewFixture(t *testing.T, handler http.Handler) *Fixture {
 	s := httptest.NewServer(handler)
-	return &fixture{
+	return &Fixture{
 		t:      t,
 		server: s,
 	}
 }
 
-func (fx *fixture) finish() {
+func (fx *Fixture) Finish() {
 	for _, resp := range fx.toClose {
 		require.NoError(fx.t, resp.Close())
 	}
 	fx.server.Close()
 }
 
-func (fx *fixture) request(method, url string, body io.Reader) *http.Response {
+func (fx *Fixture) Request(method, url string, body io.Reader) *http.Response {
 	r, err := http.NewRequest(method, fx.server.URL+url, body)
 	if err != nil {
 		require.NoError(fx.t, err)
@@ -43,6 +43,6 @@ func (fx *fixture) request(method, url string, body io.Reader) *http.Response {
 	return resp
 }
 
-func (fx *fixture) parse(respBody io.Reader, result interface{}) {
+func (fx *Fixture) Parse(respBody io.Reader, result interface{}) {
 	require.NoError(fx.t, json.NewDecoder(respBody).Decode(&result))
 }

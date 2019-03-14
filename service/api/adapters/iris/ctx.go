@@ -21,3 +21,10 @@ func (c *ContextImpl) JSON(response interface{}) {
 		//logg.FromContext(ctx).Errorf(err.Error())
 	}
 }
+
+// TODO
+// Test it!
+func (c *ContextImpl) ServerError(err error) {
+	c.irisCtx.Values().Set("error", err)
+	c.irisCtx.StatusCode(iris.StatusInternalServerError)
+}
