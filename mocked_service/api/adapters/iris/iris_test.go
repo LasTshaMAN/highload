@@ -1,9 +1,9 @@
 package iris_test
 
 import (
-	"highload/service/api"
-	"highload/service/api/adapters/iris"
-	"highload/service/api/tests"
+	"highload/mocked_service/api"
+	"highload/mocked_service/api/adapters/iris"
+	"highload/mocked_service/api/tests"
 	"net/http"
 	"testing"
 

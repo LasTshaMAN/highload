@@ -1,6 +1,6 @@
-package api
+package httpAdapters
 
-type Handler func(Context)
+type handler func(Context)
 
 type Context interface {
 	JSON(response interface{})

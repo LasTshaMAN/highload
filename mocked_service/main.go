@@ -2,9 +2,9 @@ package main
 
 import (
 	"highload/http_adapters"
-	"highload/service/api"
-	"highload/service/api/iris"
-	"highload/service/domain"
+	"highload/mocked_service/api"
+	"highload/mocked_service/api/adapters/iris"
+	"highload/mocked_service/domain"
 	"os"
 	"os/signal"
 	"syscall"
@@ -13,12 +13,13 @@ import (
 )
 
 func main() {
-	avg := domain.NewAvg()
-	a := api.New(avg)
+	v := domain.NewValuer()
+	s := domain.NewSleeper()
+	a := api.New(v, s)
 	i := iris.New(a)
 	// TODO
 	// make port dynamic
-	if _, err := httpAdapters.RunIris(i, 8001); err != nil {
+	if _, err := httpAdapters.RunIris(i, 8002); err != nil {
 		logrus.Error(err)
 		return
 	}

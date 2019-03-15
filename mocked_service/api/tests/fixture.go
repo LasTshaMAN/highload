@@ -2,8 +2,8 @@ package tests
 
 import (
 	"highload/http_test"
-	"highload/service/api"
-	"highload/service/domain"
+	"highload/mocked_service/api"
+	"highload/mocked_service/domain/domain"
 	"testing"
 
 	"github.com/golang/mock/gomock"
@@ -11,20 +11,21 @@ import (
 
 type fixture struct {
 	*httpTest.Fixture
-	ctr *gomock.Controller
-	avg *domain.MockAvg
+	ctr     *gomock.Controller
+	sleeper *domain.MockSleeper
 }
 
 func newFixture(t *testing.T, sb serverBootstrap) *fixture {
 	ctr := gomock.NewController(t)
 
-	avg := domain.NewMockAvg(ctr)
-	a := api.New(avg)
+	v := domain.NewValuer()
+	s := domain.NewMockSleeper(ctr)
+	a := api.New(v, s)
 	handler := sb(t, a)
 
 	return &fixture{
 		Fixture: httpTest.NewFixture(t, handler),
 		ctr:     ctr,
-		avg:     avg,
+		sleeper: s,
 	}
 }
