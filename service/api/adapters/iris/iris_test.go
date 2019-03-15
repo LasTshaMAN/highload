@@ -11,8 +11,7 @@ import (
 )
 
 func TestIris(t *testing.T) {
-	testCases := tests.NewTestSuite()
-	for name, testCase := range testCases {
+	for name, testCase := range tests.NewTestSuite() {
 		t.Run(name, func(t *testing.T) {
 			testCase(t, irisBootstrap)
 		})
