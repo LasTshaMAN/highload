@@ -1,7 +1,9 @@
-package domain
+package domain_test
 
 import (
-	"gopkg.in/h2non/gock.v1"
+	"encoding/json"
+	"highload/httpMock"
+	"highload/service/domain"
 	"net/http"
 	"testing"
 
@@ -10,65 +12,42 @@ import (
 
 func TestAvgImpl_Value(t *testing.T) {
 	t.Run("basic", func(t *testing.T) {
-		fx := newFixture()
-		defer fx.finish()
+		fx := newFixture(t)
+		defer fx.Finish()
 
-		vFast := 1
+		vFast := domain.Answer{Value: 1}
 		nFast := 5
-		fx.mock("/api/fast").value(vFast).times(nFast)
-		vSlow := 100
+		fx.Mock("/api/fast").Return(http.StatusOK, fx.toJSON(vFast)).Times(nFast)
+		vSlow := domain.Answer{Value: 100}
 		nSlow := 5
-		fx.mock("/api/slow").value(vSlow).times(nSlow)
-		vRandom := 50
+		fx.Mock("/api/slow").Return(http.StatusOK, fx.toJSON(vSlow)).Times(nSlow)
+		vRandom := domain.Answer{Value: 50}
 		nRandom := 20
-		fx.mock("/api/random").value(vRandom).times(nRandom)
+		fx.Mock("/api/random").Return(http.StatusOK, fx.toJSON(vRandom)).Times(nRandom)
 
-		avg := NewAvg("", fx.client)
+		avg := domain.NewAvg(fx.Host(), &http.Client{})
 		act, err := avg.Value()
-
-		exp := (vFast*nFast + vSlow*nSlow + vRandom*nRandom) / (nFast + nSlow + nRandom)
 		require.NoError(t, err)
+		exp := (vFast.Value*nFast + vSlow.Value*nSlow + vRandom.Value*nRandom) / (nFast + nSlow + nRandom)
 		require.Equal(t, exp, act)
 	})
 }
 
 type fixture struct {
-	client *http.Client
+	*httpMock.FrontEnd
+
+	t *testing.T
 }
 
-func newFixture() *fixture {
-	client := &http.Client{}
-	gock.InterceptClient(client)
-
+func newFixture(t *testing.T) *fixture {
 	return &fixture{
-		client: client,
+		FrontEnd: httpMock.New(t),
+		t:        t,
 	}
 }
 
-func (fx *fixture) finish() {
-	gock.Off()
-}
-
-func (fx *fixture) mock(url string) *httpMock {
-	return &httpMock{url: url}
-}
-
-type httpMock struct {
-	url string
-	v   int
-}
-
-func (hm *httpMock) value(v int) *httpMock {
-	hm.v = v
-	return hm
-}
-
-func (hm *httpMock) times(callCount int) {
-	for i := 0; i < callCount; i++ {
-		gock.New("").
-			Get(hm.url).
-			Reply(200).
-			JSON(map[string]int{"value": hm.v})
-	}
-	return
+func (fx *fixture) toJSON(v interface{}) []byte {
+	result, err := json.Marshal(v)
+	require.NoError(fx.t, err)
+	return result
 }
