@@ -33,7 +33,7 @@ func (t *tracker) expect(call httpCall) {
 
 func (t *tracker) registerCall(ctx context.Context) {
 	call := httpCall{
-		URL: ctx.Request().URL.Path,
+		url: ctx.Request().URL.Path,
 	}
 
 	t.register(call)
@@ -45,15 +45,15 @@ func (t *tracker) registerCall(ctx context.Context) {
 
 	call = t.exp[call.uniqueId()]
 
-	ctx.StatusCode(call.RespStatus)
-	_, err := ctx.Write(call.RespBody)
+	ctx.StatusCode(call.respStatus)
+	_, err := ctx.Write(call.respBody)
 	require.NoError(t.t, err)
 }
 
 func (t *tracker) register(call httpCall) {
 	if c, ok := t.act[call.uniqueId()]; ok {
-		call.Times = c.Times
+		call.times = c.times
 	}
-	call.Times += 1
+	call.times += 1
 	t.act[call.uniqueId()] = call
 }

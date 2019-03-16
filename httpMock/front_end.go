@@ -5,8 +5,6 @@ import (
 	"net/http/httptest"
 	"testing"
 
-	"github.com/google/go-cmp/cmp"
-
 	"github.com/kataras/iris"
 	"github.com/stretchr/testify/require"
 )
@@ -68,19 +66,9 @@ func (c *FrontEnd) reg(call httpCall) {
 func (c *FrontEnd) Finish() {
 	c.server.Close()
 
-	c.compare(c.exp, c.tracker.actCalls())
-}
-
-func (c *FrontEnd) compare(expSeq, actSeq callSeq) (diff string, match bool) {
-	exp := expSeq.stats()
-	act := actSeq.stats()
-
-	if !cmp.Equal(exp, act) {
-		diff := fmt.Sprintf("expected:\n\t%v\nactual:\n\t%v\n", exp, act)
+	if diff, match := compare(c.exp, c.tracker.actCalls()); !match {
 		require.Fail(c.t, diff)
 	}
-
-	return
 }
 
 func (c *FrontEnd) Host() string {

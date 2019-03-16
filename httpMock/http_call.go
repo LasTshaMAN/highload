@@ -1,22 +1,22 @@
 package httpMock
 
 type httpCall struct {
-	URL string
+	url string
 
-	RespStatus int
-	RespBody   []byte
+	respStatus int
+	respBody   []byte
 
-	Times int
+	times int
 }
 
 func (mc *httpCall) uniqueId() uniqueId {
 	return uniqueId{
-		URL: mc.URL,
+		url: mc.url,
 	}
 }
 
 type uniqueId struct {
-	URL string
+	url string
 }
 
 type httpCallBuilder struct {
@@ -47,9 +47,9 @@ func (b *httpCallBuilder) Times(t int) {
 
 func (b *httpCallBuilder) build() httpCall {
 	return httpCall{
-		URL:        b.url,
-		RespStatus: b.respStatus,
-		RespBody:   b.respBody,
-		Times:      b.times,
+		url:        b.url,
+		respStatus: b.respStatus,
+		respBody:   b.respBody,
+		times:      b.times,
 	}
 }

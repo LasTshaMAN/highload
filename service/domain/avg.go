@@ -50,10 +50,7 @@ func (a *AvgImpl) Value() (int, error) {
 	}
 	sum += v
 
-	// -D
-	return 50, nil
-
-	//return sum / (fastN + slowN + randomN), nil
+	return sum / (fastN + slowN + randomN), nil
 }
 
 func (a *AvgImpl) sendRequests(url string, n int) (int, error) {
