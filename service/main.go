@@ -14,7 +14,7 @@ import (
 )
 
 func main() {
-	avg := domain.NewAvg("127.0.0.1:8002", &http.Client{})
+	avg := domain.NewAvg("http://127.0.0.1:8002", &http.Client{})
 	a := api.New(avg)
 	i := iris.New(a)
 	// TODO

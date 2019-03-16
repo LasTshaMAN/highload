@@ -3,10 +3,7 @@
 package domain
 
 import (
-	"math/rand"
 	"time"
-
-	"github.com/kataras/iris/core/errors"
 )
 
 type Sleeper interface {
@@ -26,12 +23,11 @@ func (v *sleeperImpl) Sleep(d time.Duration) {
 }
 
 func (v *sleeperImpl) SleepInterval(t1, t2 time.Duration) error {
-	if t1 > t2 {
-		return errors.New("t1 <= t2 must hold")
+	span, err := RandPointBetween(t1, t2)
+	if err != nil {
+		return err
 	}
-	delta := t2 - t1
-	randomSpan := rand.Intn(int(delta))
-	time.Sleep(time.Duration(100+randomSpan) * time.Millisecond)
+	time.Sleep(span)
 	return nil
 }
 
