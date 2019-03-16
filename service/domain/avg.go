@@ -11,7 +11,7 @@ import (
 )
 
 type Avg interface {
-	Value() int
+	Value() (int, error)
 }
 
 func NewAvg(baseURL string, httpClient *http.Client) *AvgImpl {

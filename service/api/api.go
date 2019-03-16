@@ -17,8 +17,13 @@ func New(avg domain.Avg) *API {
 }
 
 func (a *API) Endpoint(ctx httpAdapters.Context) {
+	value, err := a.avg.Value()
+	if err != nil {
+		ctx.ServerError(err)
+		return
+	}
 	response := responses.Answer{
-		Value: a.avg.Value(),
+		Value: value,
 	}
 	ctx.JSON(response)
 }

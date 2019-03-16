@@ -1,8 +1,9 @@
 package api
 
 import (
+	"highload/http_adapters"
 	"highload/mocked_service/api/responses"
-	"highload/mocked_service/domain/domain"
+	"highload/mocked_service/domain"
 	"time"
 )
 
@@ -18,14 +19,14 @@ func New(v domain.Valuer, s domain.Sleeper) *API {
 	}
 }
 
-func (a *API) Fast(ctx Context) {
+func (a *API) Fast(ctx httpAdapters.Context) {
 	response := responses.Answer{
 		Value: a.v.Value(),
 	}
 	ctx.JSON(response)
 }
 
-func (a *API) Slow(ctx Context) {
+func (a *API) Slow(ctx httpAdapters.Context) {
 	a.s.Sleep(1000 * time.Millisecond)
 	response := responses.Answer{
 		Value: a.v.Value(),
@@ -33,7 +34,7 @@ func (a *API) Slow(ctx Context) {
 	ctx.JSON(response)
 }
 
-func (a *API) Random(ctx Context) {
+func (a *API) Random(ctx httpAdapters.Context) {
 	if err := a.s.SleepInterval(100*time.Millisecond, 1000*time.Millisecond); err != nil {
 		ctx.ServerError(err)
 		return
@@ -44,6 +45,6 @@ func (a *API) Random(ctx Context) {
 	ctx.JSON(response)
 }
 
-func (a *API) NeverEnding(ctx Context) {
+func (a *API) NeverEnding(ctx httpAdapters.Context) {
 	a.s.LoopForever()
 }

@@ -3,7 +3,7 @@ package tests
 import (
 	"highload/http_test"
 	"highload/mocked_service/api"
-	"highload/mocked_service/domain/domain"
+	"highload/mocked_service/domain"
 	"testing"
 
 	"github.com/golang/mock/gomock"

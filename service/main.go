@@ -5,6 +5,7 @@ import (
 	"highload/service/api"
 	"highload/service/api/iris"
 	"highload/service/domain"
+	"net/http"
 	"os"
 	"os/signal"
 	"syscall"
@@ -13,7 +14,7 @@ import (
 )
 
 func main() {
-	avg := domain.NewAvg()
+	avg := domain.NewAvg("127.0.0.1:8002", &http.Client{})
 	a := api.New(avg)
 	i := iris.New(a)
 	// TODO
