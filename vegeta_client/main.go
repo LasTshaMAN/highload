@@ -2,7 +2,6 @@ package main
 
 import (
 	"fmt"
-	"highload/vegeta_client/math"
 	"io"
 	"os"
 	"path"
@@ -47,7 +46,7 @@ func main() {
 	fmt.Printf("attack rate: %f\n", metrics.Rate)
 	fmt.Printf("total requests done: %d\n", metrics.Requests)
 	fmt.Printf("success rate: %f\n", metrics.Success)
-	fmt.Printf("errors: %v\n", metrics.Errors[:math.Min(len(metrics.Errors), 2)])
+	fmt.Printf("errors: %v\n", metrics.Errors)
 	fmt.Println()
 	fmt.Println("Latencies:")
 	fmt.Printf("-- mean: %s\n", metrics.Latencies.Mean)
