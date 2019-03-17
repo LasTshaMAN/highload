@@ -10,6 +10,6 @@ This project explores how micro-services written in Go behave under load.
 
 ## Tools
 
-[Prometheus](https://github.com/prometheus/prometheus) and [Grafana](https://github.com/grafana/grafana) are used for analysing service behavior.
+[Prometheus](https://github.com/prometheus/prometheus) is used to gather vital metrics ([Grafana](https://github.com/grafana/grafana) could be used to visualize these metrics in eye-pleasing way).
   
 [Vegeta](https://github.com/tsenart/vegeta) is used for loading service with requests.
