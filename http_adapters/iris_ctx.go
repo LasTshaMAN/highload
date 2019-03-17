@@ -25,6 +25,6 @@ func (c *IrisCtx) JSON(response interface{}) {
 // TODO
 // Test it!
 func (c *IrisCtx) ServerError(err error) {
-	c.JSON(err.Error())
 	c.irisCtx.StatusCode(iris.StatusInternalServerError)
+	c.JSON(err.Error())
 }

@@ -4,6 +4,7 @@ import (
 	"highload/http_adapters"
 	"highload/service/api"
 	"highload/service/api/iris"
+	"highload/service/api/iris/middleware"
 	"highload/service/domain"
 	"net/http"
 	"os"
@@ -13,10 +14,12 @@ import (
 	"github.com/sirupsen/logrus"
 )
 
+const serviceName = "service"
+
 func main() {
 	avg := domain.NewAvg("http://127.0.0.1:8002", &http.Client{})
 	a := api.New(avg)
-	i := iris.New(a)
+	i := iris.New(a, middleware.NewPrometheus(serviceName))
 	// TODO
 	// make port dynamic
 	if _, err := httpAdapters.RunIris(i, 8001); err != nil {

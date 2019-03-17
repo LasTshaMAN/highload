@@ -18,3 +18,4 @@ pkg
 
 # Generated files
 *.gen.go
+vegeta_client/assets/*
