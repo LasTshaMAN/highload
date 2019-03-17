@@ -17,8 +17,6 @@ func main() {
 	s := domain.NewSleeper()
 	a := api.New(v, s)
 	i := iris.New(a)
-	// TODO
-	// make port dynamic
 	if _, err := httpAdapters.RunIris(i, 8002); err != nil {
 		logrus.Error(err)
 		return

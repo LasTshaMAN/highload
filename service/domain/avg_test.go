@@ -10,7 +10,7 @@ import (
 	"github.com/stretchr/testify/require"
 )
 
-func TestAvgImpl_Value(t *testing.T) {
+func TestSequentialAvg_Value(t *testing.T) {
 	t.Run("basic", func(t *testing.T) {
 		fx := newFixture(t)
 		defer fx.Finish()
@@ -25,7 +25,30 @@ func TestAvgImpl_Value(t *testing.T) {
 		nRandom := 20
 		fx.Mock("/api/random").Return(http.StatusOK, fx.toJSON(vRandom)).Times(nRandom)
 
-		avg := domain.NewAvg(fx.Host(), &http.Client{})
+		avg := domain.NewSequentialAvg(fx.Host(), &http.Client{})
+		act, err := avg.Value()
+		require.NoError(t, err)
+		exp := (vFast.Value*nFast + vSlow.Value*nSlow + vRandom.Value*nRandom) / (nFast + nSlow + nRandom)
+		require.Equal(t, exp, act)
+	})
+}
+
+func TestConcurrentAvg_Value(t *testing.T) {
+	t.Run("basic", func(t *testing.T) {
+		fx := newFixture(t)
+		defer fx.Finish()
+
+		vFast := domain.Answer{Value: 1}
+		nFast := 5
+		fx.Mock("/api/fast").Return(http.StatusOK, fx.toJSON(vFast)).Times(nFast)
+		vSlow := domain.Answer{Value: 100}
+		nSlow := 5
+		fx.Mock("/api/slow").Return(http.StatusOK, fx.toJSON(vSlow)).Times(nSlow)
+		vRandom := domain.Answer{Value: 50}
+		nRandom := 20
+		fx.Mock("/api/random").Return(http.StatusOK, fx.toJSON(vRandom)).Times(nRandom)
+
+		avg := domain.NewConcurrentAvg(fx.Host(), &http.Client{})
 		act, err := avg.Value()
 		require.NoError(t, err)
 		exp := (vFast.Value*nFast + vSlow.Value*nSlow + vRandom.Value*nRandom) / (nFast + nSlow + nRandom)

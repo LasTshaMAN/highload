@@ -17,11 +17,9 @@ import (
 const serviceName = "service"
 
 func main() {
-	avg := domain.NewAvg("http://127.0.0.1:8002", &http.Client{})
+	avg := domain.NewSequentialAvg("http://127.0.0.1:8002", &http.Client{})
 	a := api.New(avg)
 	i := iris.New(a, middleware.NewPrometheus(serviceName))
-	// TODO
-	// make port dynamic
 	if _, err := httpAdapters.RunIris(i, 8001); err != nil {
 		logrus.Error(err)
 		return

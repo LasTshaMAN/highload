@@ -4,6 +4,8 @@ github.com/Joker/hpp v0.0.0-20180418125244-6893e659854a h1:PiDAizhfJbwZMISZ1Itx1
 github.com/Joker/hpp v0.0.0-20180418125244-6893e659854a/go.mod h1:MzD2WMdSxvbHw5fM/OXOFily/lipJWRc9C1px0Mt0ZE=
 github.com/Joker/jade v1.0.0 h1:lOCEPvTAtWfLpSZYMOv/g44MGQFAolbKh2khHHGu0Kc=
 github.com/Joker/jade v1.0.0/go.mod h1:efZIdO0py/LtcJRSa/j2WEklMSAw84WV0zZVMxNToB8=
+github.com/LasTshaMAN/Go-Execute v0.0.0-20171110130442-58fbbf865048 h1:NycJqDoWUy+3uidwhrceM0BOt38btGVP9zvkkZ9IPPA=
+github.com/LasTshaMAN/Go-Execute v0.0.0-20171110130442-58fbbf865048/go.mod h1:X4Qn+8hfuJzRXGxBwONKFtvcMO827hdCmrqymts1c54=
 github.com/Shopify/goreferrer v0.0.0-20181106222321-ec9c9a553398 h1:WDC6ySpJzbxGWFh4aMxFFC28wwGp5pEuoTtvA4q/qQ4=
 github.com/Shopify/goreferrer v0.0.0-20181106222321-ec9c9a553398/go.mod h1:a1uqRtAwp2Xwc6WNPJEufxJ7fx3npB4UV/JOLmbu5I0=
 github.com/ajg/form v0.0.0-20160822230020-523a5da1a92f h1:zvClvFQwU++UpIUBGC8YmDlfhUrweEy1R1Fj1gu5iIM=
@@ -58,8 +60,6 @@ github.com/iris-contrib/go.uuid v2.0.0+incompatible h1:XZubAYg61/JwnJNbZilGjf3b3
 github.com/iris-contrib/go.uuid v2.0.0+incompatible/go.mod h1:iz2lgM/1UnEf1kP0L/+fafWORmlnuysV2EMP8MW+qe0=
 github.com/iris-contrib/httpexpect v0.0.0-20180314041918-ebe99fcebbce h1:q8Ka/exfHNgK7izJE+aUOZd7KZXJ7oQbnJWiZakEiMo=
 github.com/iris-contrib/httpexpect v0.0.0-20180314041918-ebe99fcebbce/go.mod h1:VER17o2JZqquOx41avolD/wMGQSFEFBKWmhag9/RQRY=
-github.com/iris-contrib/middleware v0.0.0-20181021162728-8bd5d51b3c2e h1:kj3vB5WsLvahUNG7X6TDRXuYlTNgcZGMFmrd4fmAk6A=
-github.com/iris-contrib/middleware v0.0.0-20181021162728-8bd5d51b3c2e/go.mod h1:lZivVjxn00uQH7vp452Wa2p9GD+2ElkVms944o+f0+Y=
 github.com/json-iterator/go v1.1.6 h1:MrUvLMLTMxbqFJ9kzlvat/rYZqZnW3u4wkLzWTaFwKs=
 github.com/json-iterator/go v1.1.6/go.mod h1:+SdeFBvtyEkXs7REEP0seUULqWtbJapLOCVDaaPEHmU=
 github.com/jtolds/gls v4.20.0+incompatible h1:xdiiI2gbIgH/gLH7ADydsJ1uDOEzR8yvV7C0MuV77Wo=

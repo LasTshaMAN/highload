@@ -1,6 +1,7 @@
 package httpMock
 
 import (
+	"sync"
 	"testing"
 
 	"github.com/kataras/iris"
@@ -11,6 +12,8 @@ import (
 type tracker struct {
 	exp callSeq
 	act callSeq
+	// We have to use mutex in order to sync `act` across different possible go-routines that might affect it (in concurrent tests)
+	mu sync.RWMutex
 
 	t *testing.T
 }
@@ -24,6 +27,9 @@ func newTracker(t *testing.T) *tracker {
 }
 
 func (t *tracker) actCalls() callSeq {
+	t.mu.RLock()
+	defer t.mu.RUnlock()
+
 	return t.act
 }
 
@@ -51,6 +57,9 @@ func (t *tracker) registerCall(ctx context.Context) {
 }
 
 func (t *tracker) register(call httpCall) {
+	t.mu.Lock()
+	defer t.mu.Unlock()
+
 	if c, ok := t.act[call.uniqueId()]; ok {
 		call.times = c.times
 	}
