@@ -12,7 +12,7 @@ func NewConcurrentAvg(baseURL string, httpClient *http.Client) *ConcurrentAvg {
 	return &ConcurrentAvg{
 		baseURL:    baseURL,
 		httpClient: httpClient,
-		executor:   jobs.NewExecutor(32, 4096),
+		executor:   jobs.NewExecutor(32 * 1024, 1),
 	}
 }
 
