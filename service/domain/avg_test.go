@@ -1,11 +1,14 @@
 package domain_test
 
 import (
+	"crypto/tls"
 	"encoding/json"
 	"highload/httpMock"
 	"highload/service/domain"
 	"net/http"
 	"testing"
+
+	"golang.org/x/net/http2"
 
 	"github.com/stretchr/testify/require"
 )
@@ -25,7 +28,14 @@ func TestSequentialAvg_Value(t *testing.T) {
 		nRandom := 20
 		fx.Mock("/api/random").Return(http.StatusOK, fx.toJSON(vRandom)).Times(nRandom)
 
-		avg := domain.NewSequentialAvg(fx.Host(), &http.Client{})
+		client := &http.Client{
+			Transport: &http2.Transport{
+				TLSClientConfig: &tls.Config{
+					InsecureSkipVerify: true,
+				},
+			},
+		}
+		avg := domain.NewSequentialAvg(fx.Host(), client)
 		act, err := avg.Value()
 		require.NoError(t, err)
 		exp := (vFast.Value*nFast + vSlow.Value*nSlow + vRandom.Value*nRandom) / (nFast + nSlow + nRandom)
@@ -48,7 +58,14 @@ func TestConcurrentAvg_Value(t *testing.T) {
 		nRandom := 20
 		fx.Mock("/api/random").Return(http.StatusOK, fx.toJSON(vRandom)).Times(nRandom)
 
-		avg := domain.NewConcurrentAvg(fx.Host(), &http.Client{})
+		client := &http.Client{
+			Transport: &http2.Transport{
+				TLSClientConfig: &tls.Config{
+					InsecureSkipVerify: true,
+				},
+			},
+		}
+		avg := domain.NewConcurrentAvg(fx.Host(), client)
 		act, err := avg.Value()
 		require.NoError(t, err)
 		exp := (vFast.Value*nFast + vSlow.Value*nSlow + vRandom.Value*nRandom) / (nFast + nSlow + nRandom)

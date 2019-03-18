@@ -1,6 +1,7 @@
 package main
 
 import (
+	"crypto/tls"
 	"highload/http_adapters"
 	"highload/service/api"
 	"highload/service/api/iris"
@@ -11,13 +12,22 @@ import (
 	"os/signal"
 	"syscall"
 
+	"golang.org/x/net/http2"
+
 	"github.com/sirupsen/logrus"
 )
 
 const serviceName = "service"
 
 func main() {
-	avg := domain.NewSequentialAvg("http://127.0.0.1:8002", &http.Client{})
+	client := &http.Client{
+		Transport: &http2.Transport{
+			TLSClientConfig: &tls.Config{
+				InsecureSkipVerify: true,
+			},
+		},
+	}
+	avg := domain.NewConcurrentAvg("https://127.0.0.1:8002", client)
 	a := api.New(avg)
 	i := iris.New(a, middleware.NewPrometheus(serviceName))
 	if _, err := httpAdapters.RunIris(i, 8001); err != nil {

@@ -12,7 +12,7 @@ import (
 func RunIris(i *iris.Application, port int) (*iris.Application, error) {
 	e := make(chan error)
 	go func() {
-		e <- i.Run(iris.Addr(fmt.Sprintf(":%d", port)))
+		e <- i.Run(iris.TLS(fmt.Sprintf(":%d", port), "tls/server.crt", "tls/server.key"))
 	}()
 	select {
 	case err := <-e:

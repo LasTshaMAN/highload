@@ -15,12 +15,12 @@ import (
 
 var fastTargeter = vegeta.NewStaticTargeter(vegeta.Target{
 	Method: "GET",
-	URL:    "http://127.0.0.1:8002/api/fast",
+	URL:    "https://127.0.0.1:8002/api/fast",
 })
 
 var endpointTargeter = vegeta.NewStaticTargeter(vegeta.Target{
 	Method: "GET",
-	URL:    "http://127.0.0.1:8001/api/endpoint",
+	URL:    "https://127.0.0.1:8001/api/endpoint",
 })
 
 //var targeter = fastTargeter
@@ -68,14 +68,14 @@ func runLoadTest(dataFile string) (result vegeta.Metrics, err error) {
 	}()
 	enc := vegeta.NewEncoder(out)
 
-	attacker := vegeta.NewAttacker()
+	attacker := vegeta.NewAttacker(vegeta.HTTP2(true))
 	results := attacker.Attack(
 		targeter,
 		vegeta.Rate{
 			Freq: 1000,
 			Per:  time.Second,
 		},
-		60*time.Second,
+		3*time.Second,
 		"",
 	)
 	for res := range results {
