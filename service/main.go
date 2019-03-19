@@ -11,6 +11,7 @@ import (
 	"os"
 	"os/signal"
 	"syscall"
+	"time"
 
 	"golang.org/x/net/http2"
 
@@ -26,6 +27,9 @@ func main() {
 				InsecureSkipVerify: true,
 			},
 		},
+		// TODO
+		// Play with client and server timeouts
+		Timeout: 300 * time.Millisecond,
 	}
 	avg := domain.NewConcurrentAvg("https://127.0.0.1:8002", client)
 	a := api.New(avg)
