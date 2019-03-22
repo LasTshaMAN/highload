@@ -3,6 +3,7 @@ package domain
 import (
 	"fmt"
 	"net/http"
+	"strings"
 	"sync"
 
 	"github.com/LasTshaMAN/Go-Execute/jobs"
@@ -12,7 +13,7 @@ func NewConcurrentAvg(baseURL string, httpClient *http.Client) *ConcurrentAvg {
 	return &ConcurrentAvg{
 		baseURL:    baseURL,
 		httpClient: httpClient,
-		executor:   jobs.NewExecutor(32 * 1024, 1),
+		executor:   jobs.NewExecutor(2*32*1024, 1),
 	}
 }
 
@@ -24,28 +25,29 @@ type ConcurrentAvg struct {
 
 func (a *ConcurrentAvg) Value() (int, error) {
 	const fastN = 5
-	fastValues, err := a.sendRequests("/api/fast", fastN)
-	if err != nil {
-		return 0, err
-	}
+	fastValues, fastErrs := a.sendRequests("/api/fast", fastN)
 
 	const slowN = 5
-	slowValues, err := a.sendRequests("/api/slow", slowN)
-	if err != nil {
-		return 0, err
-	}
+	slowValues, slowErrs := a.sendRequests("/api/slow", slowN)
 
 	const randomN = 20
-	randomValues, err := a.sendRequests("/api/random", randomN)
-	if err != nil {
+	randomValues, randomErrs := a.sendRequests("/api/random", randomN)
+
+	if err := hasErrors(fastErrs); err != nil {
 		return 0, err
 	}
-
+	if err := hasErrors(slowErrs); err != nil {
+		return 0, err
+	}
+	if err := hasErrors(randomErrs); err != nil {
+		return 0, err
+	}
 	return (sum(fastValues) + sum(slowValues) + sum(randomValues)) / (fastN + slowN + randomN), nil
 }
 
-func (a *ConcurrentAvg) sendRequests(url string, n int) (result chan int, err error) {
+func (a *ConcurrentAvg) sendRequests(url string, n int) (result chan int, errs chan error) {
 	result = make(chan int, n)
+	errs = make(chan error, n)
 
 	wg := sync.WaitGroup{}
 
@@ -53,20 +55,21 @@ func (a *ConcurrentAvg) sendRequests(url string, n int) (result chan int, err er
 		wg.Add(1)
 
 		a.executor.Enqueue(func() {
-			v, rErr := a.sendRequest(url)
-			if rErr != nil {
-				err = rErr
+			defer wg.Done()
+
+			v, err := a.sendRequest(url)
+			if err != nil {
+				errs <- err
 				return
 			}
 			result <- v
-
-			wg.Done()
 		})
 	}
 	a.executor.Enqueue(func() {
 		wg.Wait()
 
 		close(result)
+		close(errs)
 	})
 
 	return
@@ -85,6 +88,19 @@ func (a *ConcurrentAvg) sendRequest(url string) (int, error) {
 		return 0, err
 	}
 	return answer.Value, nil
+}
+
+func hasErrors(errs chan error) error {
+	var errMsgs []string
+	for err := range errs {
+		if err != nil {
+			errMsgs = append(errMsgs, err.Error())
+		}
+	}
+	if len(errMsgs) > 0 {
+		return fmt.Errorf(strings.Join(errMsgs, "; "))
+	}
+	return nil
 }
 
 func sum(values chan int) (result int) {
