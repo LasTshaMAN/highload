@@ -17,9 +17,9 @@ services:
     ports:
       - 8002:8002
     deploy:
-      replicas: 9
+      replicas: 32
       update_config:
-        parallelism: 9
+        parallelism: 32
       restart_policy:
         condition: on-failure
   prometheus_node_exporter:

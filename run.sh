@@ -3,6 +3,7 @@
 #docker swarm leave --force
 #docker swarm init
 docker stack deploy --compose-file docker-compose.yml common
+docker stack rm common
 
 
 # check that service was deployed
