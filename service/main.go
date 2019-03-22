@@ -11,7 +11,6 @@ import (
 	"os"
 	"os/signal"
 	"syscall"
-	"time"
 
 	"golang.org/x/net/http2"
 
@@ -29,9 +28,9 @@ func main() {
 		},
 		// TODO
 		// Play with client and server timeouts
-		Timeout: 300 * time.Millisecond,
+		//Timeout: 1300 * time.Millisecond,
 	}
-	avg := domain.NewConcurrentAvg("https://127.0.0.1:8002", client)
+	avg := domain.NewConcurrentAvg("https://mocked_service:8002", client)
 	a := api.New(avg)
 	i := iris.New(a, middleware.NewPrometheus(serviceName))
 	if _, err := httpAdapters.RunIris(i, 8001); err != nil {

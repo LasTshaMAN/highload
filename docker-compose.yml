@@ -1,0 +1,50 @@
+version: "3"
+services:
+  service:
+    image: common:latest
+    command: ["/bin/service"]
+    networks:
+      - backend
+      - proxy
+    ports:
+      - 8001:8001
+  mocked_service:
+    image: common:latest
+    command: ["/bin/mocked_service"]
+    networks:
+      - backend
+      - proxy
+    ports:
+      - 8002:8002
+    deploy:
+      replicas: 9
+      update_config:
+        parallelism: 9
+      restart_policy:
+        condition: on-failure
+  prometheus_node_exporter:
+    image: prom/node-exporter:latest
+    ports:
+      - 9100:9100
+    volumes:
+      - /sys:/host/sys:ro
+      - /:/rootfs:ro
+      - /proc:/host/proc:ro
+    deploy:
+      mode: global
+  prometheus:
+    image: my-prom:latest
+    networks:
+      - backend
+      - proxy
+    ports:
+      - 9090:9090
+    deploy:
+      mode: replicated
+      replicas: 1
+
+networks:
+  backend:
+    external: false
+  proxy:
+    external: true

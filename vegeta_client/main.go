@@ -72,7 +72,8 @@ func runLoadTest(dataFile string) (result vegeta.Metrics, err error) {
 	results := attacker.Attack(
 		targeter,
 		vegeta.Rate{
-			Freq: 500,
+			//Freq: 5000,
+			Freq: 1000,
 			Per:  time.Second,
 		},
 		120*time.Second,
