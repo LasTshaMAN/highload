@@ -65,7 +65,7 @@ func TestConcurrentAvg_Value(t *testing.T) {
 				},
 			},
 		}
-		avg := domain.NewConcurrentAvg(fx.Host(), client)
+		avg := domain.NewConcurrentAvg(fx.Host(), client, 4096)
 		act, err := avg.Value()
 		require.NoError(t, err)
 		exp := (vFast.Value*nFast + vSlow.Value*nSlow + vRandom.Value*nRandom) / (nFast + nSlow + nRandom)

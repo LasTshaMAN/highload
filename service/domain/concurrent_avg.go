@@ -9,11 +9,11 @@ import (
 	"github.com/LasTshaMAN/Go-Execute/jobs"
 )
 
-func NewConcurrentAvg(baseURL string, httpClient *http.Client) *ConcurrentAvg {
+func NewConcurrentAvg(baseURL string, httpClient *http.Client, workersN int) *ConcurrentAvg {
 	return &ConcurrentAvg{
 		baseURL:    baseURL,
 		httpClient: httpClient,
-		executor:   jobs.NewExecutor(2*32*1024, 1),
+		executor:   jobs.NewExecutor(workersN, 1),
 	}
 }
 

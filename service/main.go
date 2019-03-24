@@ -31,7 +31,7 @@ func main() {
 		// Play with client and server timeouts
 		Timeout: 300 * time.Millisecond,
 	}
-	avg := domain.NewConcurrentAvg("https://127.0.0.1:8002", client)
+	avg := domain.NewConcurrentAvg("https://127.0.0.1:8002", client, 2*32*1024)
 	a := api.New(avg)
 	i := iris.New(a, middleware.NewPrometheus(serviceName))
 	if _, err := httpAdapters.RunIris(i, 8001); err != nil {
